@@ -292,6 +292,7 @@ namespace BmwDeepObd
             {
                 HandleStartDialogs();
             }
+            _activityCommon.RequestUsbPermission(null);
         }
 
         protected override void OnPause()
@@ -1929,8 +1930,31 @@ namespace BmwDeepObd
             string action = intent.Action;
             switch (action)
             {
+                case UsbManager.ActionUsbDeviceAttached:
+                    if (_activityActive)
+                    {
+                        if (intent.GetParcelableExtra(UsbManager.ExtraDevice) is UsbDevice usbDevice)
+                        {
+                            _activityCommon.RequestUsbPermission(usbDevice);
+                            if (_activityCommon.SelectedInterface == ActivityCommon.InterfaceType.Ftdi)
+                            {
+                                ReadSgbd();
+                            }
+                            UpdateOptionsMenu();
+                            UpdateDisplay();
+                        }
+                    }
+                    break;
+
                 case UsbManager.ActionUsbDeviceDetached:
-                    EdiabasClose();
+                    if (_activityCommon.SelectedInterface == ActivityCommon.InterfaceType.Ftdi)
+                    {
+                        if (intent.GetParcelableExtra(UsbManager.ExtraDevice) is UsbDevice usbDevice &&
+                            EdFtdiInterface.IsValidUsbDevice(usbDevice))
+                        {
+                            EdiabasClose();
+                        }
+                    }
                     break;
             }
         }

@@ -36,7 +36,7 @@
 \nFeel free to contribute or to report problems.
 \nA detailed documentation could also be found on this web site.
 \n\nChanges in this version:\n</string>
-  <string name="version_last_changes">- EDIABAS: Writing of particular values fixed\n- Fixed minor problems</string>
+  <string name="version_last_changes">- FTDI detection improved\n- Fixed minor problems</string>
   <string name="app_info_message">Deep OBD for BMW and VAG\nVersion: {0}\nId: {1}</string>
   <string name="vag_mode_info">The VAG mode ist still experimental.\nA <a href='https://github.com/uholeschak/ediabaslib/blob/master/docs/Replacement_firmware_for_ELM327.md'>Deep OBD Adapter</a> with al least firmware version 0.8 is required.\nAt the moment only the protocols KWP2000, KWP1281 and TP2.0 (vehicles until 4.2012) are supported.</string>
 
@@ -217,6 +217,9 @@
 
   <!-- Wi-Fi-->
   <string name="connected_with_wifi_adapter">You are currently connected to a Wi-Fi adapter.\nFor internet access disconnection of the adapter is required.\nDo you want to disable Wi-Fi now?</string>
+
+  <!-- USB -->
+  <string name="ftdi_fake_device">The connected USB adapter uses a disabled fake FT232R chip.\nFor a stable connection it is recommended to use only original FTDI chips.</string>
 
   <!-- ENET ip selection -->
   <string name="select_enet_ip_search">Searching vehicles</string>
