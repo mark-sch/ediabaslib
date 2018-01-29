@@ -278,6 +278,7 @@ namespace BmwDeepObd
             {
                 _activityCommon.StartMtcService();
             }
+            _activityCommon.RequestUsbPermission(null);
         }
 
         protected override void OnResume()
@@ -292,7 +293,6 @@ namespace BmwDeepObd
             {
                 HandleStartDialogs();
             }
-            _activityCommon.RequestUsbPermission(null);
         }
 
         protected override void OnPause()
@@ -1773,6 +1773,7 @@ namespace BmwDeepObd
                         {
                             _instanceData.CommErrorsOccured = true;
                         }
+                        _runContinuous = false;
                     }
 
                     RunOnUiThread(() =>
@@ -1925,6 +1926,10 @@ namespace BmwDeepObd
         {
             if (intent == null)
             {   // from usb check timer
+                if (_activityActive)
+                {
+                    _activityCommon.RequestUsbPermission(null);
+                }
                 return;
             }
             string action = intent.Action;
@@ -1936,23 +1941,8 @@ namespace BmwDeepObd
                         if (intent.GetParcelableExtra(UsbManager.ExtraDevice) is UsbDevice usbDevice)
                         {
                             _activityCommon.RequestUsbPermission(usbDevice);
-                            if (_activityCommon.SelectedInterface == ActivityCommon.InterfaceType.Ftdi)
-                            {
-                                ReadSgbd();
-                            }
                             UpdateOptionsMenu();
                             UpdateDisplay();
-                        }
-                    }
-                    break;
-
-                case UsbManager.ActionUsbDeviceDetached:
-                    if (_activityCommon.SelectedInterface == ActivityCommon.InterfaceType.Ftdi)
-                    {
-                        if (intent.GetParcelableExtra(UsbManager.ExtraDevice) is UsbDevice usbDevice &&
-                            EdFtdiInterface.IsValidUsbDevice(usbDevice))
-                        {
-                            EdiabasClose();
                         }
                     }
                     break;

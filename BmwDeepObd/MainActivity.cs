@@ -463,6 +463,10 @@ namespace BmwDeepObd
             base.OnStart();
 
             _activityCommon?.StartMtcService();
+            if (_instanceData.StorageAccessGranted)
+            {
+                _activityCommon?.RequestUsbPermission(null);
+            }
         }
 
         protected override void OnStop()
@@ -500,10 +504,6 @@ namespace BmwDeepObd
             }
             UpdateOptionsMenu();
             UpdateDisplay();
-            if (_instanceData.StorageAccessGranted)
-            {
-                _activityCommon.RequestUsbPermission(null);
-            }
         }
 
         protected override void OnPause()
@@ -1499,7 +1499,10 @@ namespace BmwDeepObd
         {
             if (intent == null)
             {   // from usb check timer
-                _activityCommon.RequestUsbPermission(null);
+                if (_activityActive)
+                {
+                    _activityCommon.RequestUsbPermission(null);
+                }
                 return;
             }
             string action = intent.Action;

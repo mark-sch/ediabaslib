@@ -434,6 +434,7 @@ namespace BmwDeepObd
             {
                 _activityCommon.StartMtcService();
             }
+            _activityCommon.RequestUsbPermission(null);
         }
 
         protected override void OnResume()
@@ -448,7 +449,6 @@ namespace BmwDeepObd
             {
                 HandleStartDialogs();
             }
-            _activityCommon.RequestUsbPermission(null);
         }
 
         protected override void OnPause()
@@ -3603,6 +3603,11 @@ namespace BmwDeepObd
                     .Show();
                     return;
                 }
+                // wait for thread to finish
+                if (IsJobRunning())
+                {
+                    _jobThread.Join();
+                }
                 TranslateAndSelectJobs(ecuInfo);
             }
         }
@@ -4300,6 +4305,10 @@ namespace BmwDeepObd
         {
             if (intent == null)
             {   // from usb check timer
+                if (_activityActive)
+                {
+                    _activityCommon.RequestUsbPermission(null);
+                }
                 return;
             }
             string action = intent.Action;

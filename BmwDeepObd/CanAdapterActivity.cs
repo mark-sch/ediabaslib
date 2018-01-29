@@ -252,13 +252,13 @@ namespace BmwDeepObd
             {
                 _activityCommon.StartMtcService();
             }
+            _activityCommon.RequestUsbPermission(null);
         }
 
         protected override void OnResume()
         {
             base.OnResume();
             _activityActive = true;
-            _activityCommon.RequestUsbPermission(null);
         }
 
         protected override void OnPause()
@@ -385,6 +385,10 @@ namespace BmwDeepObd
         {
             if (intent == null)
             {   // from usb check timer
+                if (_activityActive)
+                {
+                    _activityCommon.RequestUsbPermission(null);
+                }
                 return;
             }
             string action = intent.Action;
