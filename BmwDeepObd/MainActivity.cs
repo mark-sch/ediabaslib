@@ -14,6 +14,7 @@ using System.Threading;
 using System.Xml.Linq;
 using Android.Content;
 using Android.Content.PM;
+using Android.Content.Res;
 using Android.Hardware.Usb;
 using Android.OS;
 using Android.Support.Design.Widget;
@@ -585,6 +586,13 @@ namespace BmwDeepObd
                 _lastBackPressedTime = Stopwatch.GetTimestamp();
                 Toast.MakeText(this, GetString(Resource.String.back_button_twice_for_exit), ToastLength.Short).Show();
             }
+        }
+
+        public override void OnConfigurationChanged(Configuration newConfig)
+        {
+            base.OnConfigurationChanged(newConfig);
+
+            UpdateDisplay();
         }
 
         protected override void OnActivityResult(int requestCode, Android.App.Result resultCode, Intent data)
@@ -1757,6 +1765,23 @@ namespace BmwDeepObd
                     buttonErrorCopy = dynamicFragment.View.FindViewById<Button>(Resource.Id.button_copy);
                 }
 
+                int gaugeSize = 200;
+                if (gridViewResult != null && gridViewResult.Visibility == ViewStates.Visible)
+                {
+                    int gaugeCount = pageInfo.GaugesPortrait;
+                    switch (Resources.Configuration.Orientation)
+                    {
+                        case Android.Content.Res.Orientation.Landscape:
+                            gaugeCount = pageInfo.GaugesLandscape;
+                            break;
+                    }
+                    gaugeSize = (gridViewResult.Width / gaugeCount) - gridViewResult.HorizontalSpacing - 1;
+                    if (gaugeSize < 10)
+                    {
+                        gaugeSize = 10;
+                    }
+                }
+
                 if (dynamicValid && resultListAdapter != null)
                 {
                     MultiMap<string, EdiabasNet.ResultData> resultDict = null;
@@ -2084,7 +2109,7 @@ namespace BmwDeepObd
                                                 resourceId = Resource.Layout.result_customgauge_dot;
                                                 break;
                                         }
-                                        tempResultGrid.Add(new GridResultItem(resourceId, GetPageString(pageInfo, displayInfo.Name), result, displayInfo.MinValue, displayInfo.MaxValue, value));
+                                        tempResultGrid.Add(new GridResultItem(resourceId, GetPageString(pageInfo, displayInfo.Name), result, displayInfo.MinValue, displayInfo.MaxValue, value, gaugeSize));
                                     }
                                 }
                                 else
@@ -2119,6 +2144,11 @@ namespace BmwDeepObd
                                     resultChanged = true;
                                     break;
                                 }
+                                if (resultNew.GaugeSize != resultOld.GaugeSize)
+                                {
+                                    resultChanged = true;
+                                    break;
+                                }
                             }
                         }
                         if (resultChanged)
@@ -2129,6 +2159,7 @@ namespace BmwDeepObd
                                 resultGridAdapter.Items.Add(resultItem);
                             }
                             resultGridAdapter.NotifyDataSetChanged();
+                            gridViewResult.SetColumnWidth(gaugeSize);
                         }
                     }
                     else
