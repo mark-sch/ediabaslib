@@ -36,7 +36,7 @@
 \nFeel free to contribute or to report problems.
 \nA detailed documentation could also be found on this web site.
 \n\nChanges in this version:\n</string>
-  <string name="version_last_changes">- FTDI detection improved\n- Fixed minor problems</string>
+  <string name="version_last_changes">- Allow scaling of graphical gauges\n- Fixed minor problems</string>
   <string name="app_info_message">Deep OBD for BMW and VAG\nVersion: {0}\nId: {1}</string>
   <string name="vag_mode_info">The VAG mode ist still experimental.\nA <a href='https://github.com/uholeschak/ediabaslib/blob/master/docs/Replacement_firmware_for_ELM327.md'>Deep OBD Adapter</a> with al least firmware version 0.8 is required.\nAt the moment only the protocols KWP2000, KWP1281 and TP2.0 (vehicles until 4.2012) are supported.</string>
 
@@ -366,6 +366,9 @@
   <string name="xml_tool_ecu_font_size_small">Small</string>
   <string name="xml_tool_ecu_font_size_medium">Medium</string>
   <string name="xml_tool_ecu_font_size_large">Large</string>
+  <string name="xml_tool_ecu_grid_count">Graphical items per line</string>
+  <string name="xml_tool_ecu_grid_count_portrait_value">Portrait</string>
+  <string name="xml_tool_ecu_grid_count_landscape_value">Landscape</string>
   <string name="xml_tool_ecu_jobs_name">Job list</string>
   <string name="xml_tool_ecu_results">Job result</string>
   <string name="xml_tool_ecu_show_all_results">Show all results</string>

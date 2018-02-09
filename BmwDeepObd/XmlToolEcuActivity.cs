@@ -130,8 +130,14 @@ namespace BmwDeepObd
         private EditText _editTextPageName;
         private EditText _editTextEcuName;
         private CheckBox _checkBoxDisplayTypeGrid;
+        private TextView _textViewFontSizeTitle;
         private Spinner _spinnerFontSize;
         private StringObjAdapter _spinnerFontSizeAdapter;
+        private TextView _textViewGridCount;
+        private TextView _textViewGridCountPortraitValue;
+        private EditText _editTextGridCountPortraitValue;
+        private TextView _textViewGridCountLandscapeValue;
+        private EditText _editTextGridCountLandscapeValue;
         private Spinner _spinnerJobs;
         private JobListAdapter _spinnerJobsAdapter;
         private TextView _textViewJobCommentsTitle;
@@ -225,6 +231,7 @@ namespace BmwDeepObd
                 DisplayTypeSelected();
             };
 
+            _textViewFontSizeTitle  = FindViewById<TextView>(Resource.Id.textViewFontSizeTitle);
             _spinnerFontSize = FindViewById<Spinner>(Resource.Id.spinnerFontSize);
             _spinnerFontSizeAdapter = new StringObjAdapter(this);
             _spinnerFontSize.Adapter = _spinnerFontSizeAdapter;
@@ -243,6 +250,15 @@ namespace BmwDeepObd
             }
             _spinnerFontSize.SetSelection(fontSelection);
             _spinnerFontSize.ItemSelected += FontItemSelected;
+
+            _textViewGridCount = FindViewById<TextView>(Resource.Id.textViewGridCount);
+            _textViewGridCountPortraitValue = FindViewById<TextView>(Resource.Id.textViewGridCountPortraitValue);
+            _editTextGridCountPortraitValue = FindViewById<EditText>(Resource.Id.editTextGridCountPortraitValue);
+            _textViewGridCountLandscapeValue = FindViewById<TextView>(Resource.Id.textViewGridCountLandscapeValue);
+            _editTextGridCountLandscapeValue = FindViewById<EditText>(Resource.Id.editTextGridCountLandscapeValue);
+
+            _editTextGridCountPortraitValue.Text = _ecuInfo.GaugesPortrait.ToString(CultureInfo.InvariantCulture);
+            _editTextGridCountLandscapeValue.Text = _ecuInfo.GaugesLandscape.ToString(CultureInfo.InvariantCulture);
 
             _spinnerJobs = FindViewById<Spinner>(Resource.Id.spinnerJobs);
             _spinnerJobsAdapter = new JobListAdapter(this);
@@ -994,18 +1010,45 @@ namespace BmwDeepObd
                 fontSize = (XmlToolActivity.DisplayFontSize)_spinnerFontSizeAdapter.Items[_spinnerFontSize.SelectedItemPosition].Data;
             }
             _ecuInfo.FontSize = fontSize;
+
+            if (Int32.TryParse(_editTextGridCountPortraitValue.Text, NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out Int32 gaugesPortrait))
+            {
+                if (gaugesPortrait >= 1)
+                {
+                    _ecuInfo.GaugesPortrait = gaugesPortrait;
+                }
+            }
+
+            if (Int32.TryParse(_editTextGridCountLandscapeValue.Text, NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out Int32 gaugesLandscape))
+            {
+                if (gaugesLandscape >= 1)
+                {
+                    _ecuInfo.GaugesLandscape = gaugesLandscape;
+                }
+            }
         }
 
         private void DisplayTypeSelected()
         {
             HideKeyboard();
-            ViewStates viewState = _checkBoxDisplayTypeGrid.Checked ? ViewStates.Visible : ViewStates.Gone;
-            _textViewGridType.Visibility = viewState;
-            _spinnerGridType.Visibility = viewState;
-            _textViewMinValue.Visibility = viewState;
-            _editTextMinValue.Visibility = viewState;
-            _textViewMaxValue.Visibility = viewState;
-            _editTextMaxValue.Visibility = viewState;
+            ViewStates viewStateGrid = _checkBoxDisplayTypeGrid.Checked ? ViewStates.Visible : ViewStates.Gone;
+            ViewStates viewStateStd = _checkBoxDisplayTypeGrid.Checked ? ViewStates.Gone : ViewStates.Visible;
+
+            _textViewFontSizeTitle.Visibility = viewStateStd;
+            _spinnerFontSize.Visibility = viewStateStd;
+
+            _textViewGridCount.Visibility = viewStateGrid;
+            _textViewGridCountPortraitValue.Visibility = viewStateGrid;
+            _editTextGridCountPortraitValue.Visibility = viewStateGrid;
+            _textViewGridCountLandscapeValue.Visibility = viewStateGrid;
+            _editTextGridCountLandscapeValue.Visibility = viewStateGrid;
+
+            _textViewGridType.Visibility = viewStateGrid;
+            _spinnerGridType.Visibility = viewStateGrid;
+            _textViewMinValue.Visibility = viewStateGrid;
+            _editTextMinValue.Visibility = viewStateGrid;
+            _textViewMaxValue.Visibility = viewStateGrid;
+            _editTextMaxValue.Visibility = viewStateGrid;
         }
 
         private void FontItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
